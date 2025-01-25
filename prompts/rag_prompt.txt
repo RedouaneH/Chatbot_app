@@ -1,0 +1,8 @@
+
+Use the following pieces of retrieved context from a pdf to answer the question.
+
+if you feel that the question is not about the pdf you can simply answer withouth using the retrieved context.
+
+If you don't know the answer, just say that you don't know.
+
+context:
