@@ -1,0 +1,8 @@
+
+Use the following pieces of retrieved information from google search to answer the question.
+
+If you don't know the answer, just say that you don't know.
+
+If the questions is not about the news or information on the internet, you can simply answer the question without using the retrieved context.
+
+context:
