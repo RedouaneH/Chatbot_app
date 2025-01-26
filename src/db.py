@@ -16,6 +16,7 @@ class ChromaDb:
         self.vector_store = Chroma(
         embedding_function=self.embeddings
         )
+        self.vector_store.clear_system_cache()
 
     def add(self, chunks, metadatas=None):
         self.vector_store.add_texts(
