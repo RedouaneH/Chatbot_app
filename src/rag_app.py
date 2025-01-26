@@ -80,9 +80,6 @@ for message in st.session_state.messages:
 # Main chat Interface
 if prompt := st.chat_input("How can I help?"):
 
-    if not uploaded_file:
-        db.reset()
-
     if uploaded_file:
         # RAG 
 
