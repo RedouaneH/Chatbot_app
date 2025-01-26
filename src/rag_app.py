@@ -8,6 +8,7 @@ from db import *
 from generation import *
 from data import *
 
+
 # --- Init ---
 
 load_dotenv()
