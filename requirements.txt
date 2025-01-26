@@ -9,4 +9,3 @@ openai>=0.27.0
 streamlit>=1.20.0
 pypdf2>=3.0.0
 tiktoken>=0.4.0
-sqlite3 >= 3.35.0
