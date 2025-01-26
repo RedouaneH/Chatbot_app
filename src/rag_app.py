@@ -31,7 +31,7 @@ if "search_web" not in st.session_state:
 if "file_uploaded" not in st.session_state:
     st.session_state.file_uploaded = False
 
-db = None
+db = ChromaDb()
 top_k_url = 5
 top_k_similar = 5
 score_threshold = 0.5
@@ -68,8 +68,7 @@ with st.sidebar:
 
     if st.session_state.file_uploaded and uploaded_file is None:
         st.session_state.file_uploaded = False
-        db.erase()
-        db = None
+        db.reset()
 
 # Display The chat
 for message in st.session_state.messages:
@@ -95,7 +94,6 @@ if prompt := st.chat_input("How can I help?"):
 
     elif st.session_state.search_web:
         # Web Search
-        db = ChromaDb()
         st.session_state.messages.append({"role": "user", "content": prompt})
         with st.chat_message("user", avatar=USER_AVATAR):
             st.markdown(prompt)
@@ -112,8 +110,7 @@ if prompt := st.chat_input("How can I help?"):
 
         st.session_state.messages.append({"role": "system", "content": web_search_prompt})
 
-        db.erase()
-        db=None
+        db.reset()
 
     else:
         # Basic AI interaction
