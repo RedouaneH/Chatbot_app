@@ -31,7 +31,7 @@ if "search_web" not in st.session_state:
 if "file_uploaded" not in st.session_state:
     st.session_state.file_uploaded = False
 
-db = ChromaDb()
+db = None
 top_k_url = 5
 top_k_similar = 5
 score_threshold = 0.5
@@ -50,6 +50,7 @@ with st.sidebar:
     # PDF uploader
     uploaded_file = st.sidebar.file_uploader("Upload a PDF", type="pdf")
     if uploaded_file is not None:
+        db = ChromaDb()
         st.session_state.file_uploaded = True
         pdf_reader = PdfReader(uploaded_file)
         pdf_text = ""
@@ -96,7 +97,7 @@ if prompt := st.chat_input("How can I help?"):
 
     elif st.session_state.search_web:
         # Web Search
-
+        db = ChromaDb()
         st.session_state.messages.append({"role": "user", "content": prompt})
         with st.chat_message("user", avatar=USER_AVATAR):
             st.markdown(prompt)
