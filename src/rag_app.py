@@ -111,6 +111,9 @@ if prompt := st.chat_input("How can I help?"):
 
         st.session_state.messages.append({"role": "system", "content": web_search_prompt})
 
+        db.reset()
+        db=None
+
     else:
         # Basic AI interaction
         st.session_state.messages.append({"role": "user", "content": prompt})
