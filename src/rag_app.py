@@ -68,7 +68,7 @@ with st.sidebar:
 
     if st.session_state.file_uploaded and uploaded_file is None:
         st.session_state.file_uploaded = False
-        db.reset()
+        db.erase()
         db = None
 
 # Display The chat
@@ -112,7 +112,7 @@ if prompt := st.chat_input("How can I help?"):
 
         st.session_state.messages.append({"role": "system", "content": web_search_prompt})
 
-        db.reset()
+        db.erase()
         db=None
 
     else:
