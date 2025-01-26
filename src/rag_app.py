@@ -69,6 +69,7 @@ with st.sidebar:
     if st.session_state.file_uploaded and uploaded_file is None:
         st.session_state.file_uploaded = False
         db.reset()
+        db = None
 
 # Display The chat
 for message in st.session_state.messages:
