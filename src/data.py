@@ -1,9 +1,10 @@
 
+
 import os
 from typing import List
 from dotenv import load_dotenv
 from googleapiclient.discovery import build
-from langchain_openai import ChatOpenAI
+from langchain.chat_models import ChatOpenAI
 import time
 import requests
 from bs4 import BeautifulSoup
