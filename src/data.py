@@ -86,15 +86,15 @@ def read_txt_file(file_path):
         return content
 
 def get_google_search_prompt():
-    file_path = "../prompts/google_search_query_prompt.txt"
+    file_path = os.path.join(os.path.dirname(__file__), '../prompts/google_search_query_prompt.txt')
     return read_txt_file(file_path)
 
 def get_rag_prompt():
-    file_path = "../prompts/rag_prompt.txt"
+    file_path = os.path.join(os.path.dirname(__file__), '../prompts/rag_prompt.txt')
     return read_txt_file(file_path)
 
 def get_web_search_prompt():
-    file_path = "../prompts/web_search_prompt.txt"
+    file_path = os.path.join(os.path.dirname(__file__), '../prompts/web_search_prompt.txt')
     return read_txt_file(file_path)
 
 
