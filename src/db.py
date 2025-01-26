@@ -46,3 +46,10 @@ class ChromaDb:
         self.vector_store = Chroma(
             embedding_function=self.embeddings
         )
+
+    def erase(self):
+        """Deletes the collection without resetting the vector store."""
+        if self.vector_store:
+            print("Deleting the collection...")
+            self.vector_store.delete_collection()
+            print("Collection deleted.")
