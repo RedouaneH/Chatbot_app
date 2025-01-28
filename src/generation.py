@@ -10,7 +10,7 @@ def generate_web_search_prompt(db, query, top_k_url, chunk_size, overlap_ratio, 
     urls = search_google(google_search_query, top_k=top_k_url)
     for u in urls:
         print(u)
-    if(len(urls==0)):
+    if(len(urls)==0):
         print("Error Zero Urls Retrieved")
     db.load_from_urls(urls, chunk_size, int(overlap_ratio*chunk_size))
 
