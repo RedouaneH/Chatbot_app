@@ -8,6 +8,7 @@ def generate_web_search_prompt(db, query, top_k_url, chunk_size, overlap_ratio, 
     google_search_query = build_google_search_query(query, chat_history)
     print(f"\ngoogle_search_query : {google_search_query}\n")
     urls = search_google(google_search_query, top_k=top_k_url)
+    print(urls)
     for u in urls:
         print(u)
     if(len(urls)==0):
