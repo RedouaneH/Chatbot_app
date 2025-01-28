@@ -34,7 +34,7 @@ if "file_uploaded" not in st.session_state:
 db = FAISSDb()
 top_k_url = 5
 top_k_similar = 5
-score_threshold = 0.5
+score_threshold = 0.2
 chunk_size = 500
 overlap_ratio = 0.15
 
