@@ -49,7 +49,7 @@ def search_google(query, top_k):
             print(f"No items found in the response: {res}")
             break
     return results
-
+'''
 def extract_text_from_url(url):
     start = time.time()
     with requests.Session() as session:
@@ -65,6 +65,34 @@ def extract_text_from_url(url):
     text = soup.get_text(separator=" ").strip()
     text = " ".join([chunk.strip() for chunk in text.split() if chunk.strip()])
     print(f"the function extract text from url takes: {time.time()-start:.4f} seconds")
+    return text
+'''
+
+from bs4 import BeautifulSoup
+import requests
+import time
+from tenacity import retry, stop_after_attempt, wait_fixed
+
+@retry(stop=stop_after_attempt(3), wait=wait_fixed(2))
+def extract_text_from_url(url):
+    start = time.time()
+    with requests.Session() as session:
+        headers = {
+            "User-Agent": (
+                "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
+                "AppleWebKit/537.36 (KHTML, like Gecko) "
+                "Chrome/91.0.4472.124 Safari/537.36"
+            )
+        }
+        response = session.get(url, headers=headers, timeout=10)
+        response.raise_for_status()
+
+    soup = BeautifulSoup(response.content, "lxml")
+    for script_or_style in soup(["script", "style"]):
+        script_or_style.decompose()
+    text = soup.get_text(separator=" ").strip()
+    text = " ".join([chunk.strip() for chunk in text.split() if chunk.strip()])
+    print(f"The function extract_text_from_url takes: {time.time() - start:.4f} seconds")
     return text
 
 def build_google_search_query(query, chat_history):
