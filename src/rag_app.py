@@ -31,7 +31,7 @@ if "search_web" not in st.session_state:
 if "file_uploaded" not in st.session_state:
     st.session_state.file_uploaded = False
 
-db = ChromaDb()
+db = FAISSDb()
 top_k_url = 5
 top_k_similar = 5
 score_threshold = 0.5
