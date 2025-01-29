@@ -15,8 +15,6 @@ load_dotenv()
 
 st.title("RawBot")
 
-st.info("ℹ️ Note: This chatbot is programmed for English language. Using other languages may result in irrelevant responses.")
-
 USER_AVATAR = "👤"
 BOT_AVATAR = "🤖"
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
@@ -43,6 +41,8 @@ chunk_size = 500
 
 
 with st.sidebar:
+
+    st.info("ℹ️ Note: This chatbot is optimized for English. Responses in other languages may be inaccurate or highly unreliable.")
 
     # Delete Chat Button
     if st.button("Delete Chat History"):
