@@ -4,9 +4,11 @@ Please structure your response into clear, concise paragraphs.
 
 At the end of your response, include a list of sources urls corresponding to the information provided, formatted as follows:
 
-- Source 1
-- Source 2
-- Source 3
+- url1
+- url2
+- url3
+
+Don't write "url", write the url
 
 If the retrieved information does not contain sufficient details to answer the question, or if the question pertains to topics not covered by the retrieved information, respond with: "I don't know."
 
