@@ -1,70 +1,5 @@
 
 
-from langchain.vectorstores import Chroma
-from langchain.embeddings.openai import OpenAIEmbeddings
-from data import *
-'''
-__import__('pysqlite3')
-import sys
-sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
-'''
-class ChromaDb:
-
-    def __init__(self):
-
-        self.embeddings = OpenAIEmbeddings()
-        self.vector_store = Chroma(
-        embedding_function=self.embeddings
-        )
-
-    def add(self, chunks, metadatas=None):
-        self.vector_store.add_texts(
-            texts=chunks,
-            metadatas=metadatas
-        )
-
-    def add_from_doc(self, doc, metadatas=None, chunk_size=1000, overlap=100):
-        chunks = split_into_chunks(doc, chunk_size, overlap)
-        self.add(chunks)
-    
-    def load_from_urls(self, urls, chunk_size=1000, overlap=100):
-        for url in urls:
-            try:
-                txt = extract_text_from_url(url)
-                chunks = split_into_chunks(txt, chunk_size, overlap)
-                self.add(chunks)
-            except Exception as e:
-                print(f"Error accessing {url}: {e}")
-        return
-    
-    def retrieve(self, query, k, score_threshold):
-
-        retriever = self.vector_store.as_retriever(
-            search_type="similarity_score_threshold",
-            search_kwargs={"k": k, "score_threshold": score_threshold}
-        )
-
-        retrieved_chunks = [value.page_content for value in retriever.invoke(query)]
-
-        return retrieved_chunks
-
-
-    def reset(self):
-        if self.vector_store:
-            print(self.vector_store._collection.name)
-            self.vector_store.delete_collection()
-
-        self.vector_store = Chroma(
-            embedding_function=self.embeddings
-        )
-
-    def erase(self):
-        """Deletes the collection without resetting the vector store."""
-        if self.vector_store:
-            print("Deleting the collection...")
-            self.vector_store.delete_collection()
-            print("Collection deleted.")
-
 from langchain.vectorstores import FAISS
 from langchain.embeddings.openai import OpenAIEmbeddings
 from langchain.docstore import InMemoryDocstore
@@ -114,7 +49,8 @@ class FAISSDb:
             try:
                 txt = extract_text_from_url(url)
                 chunks = split_into_chunks(txt, chunk_size, overlap)
-                self.add(chunks)
+                metadatas = [{"url": url} for _ in chunks]
+                self.add(chunks, metadatas)
             except Exception as e:
                 print(f"Error accessing {url}: {e}")
         return
@@ -125,7 +61,8 @@ class FAISSDb:
             search_kwargs={"k": k, "score_threshold": score_threshold},
         )
 
-        retrieved_chunks = [value.page_content for value in retriever.invoke(query)]
+        retrieved_chunks = [value.page_content+" - from the following url : "+value.metadata["url"] for value in retriever.invoke(query)]
+
         return retrieved_chunks
 
     def reset(self):

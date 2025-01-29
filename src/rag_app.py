@@ -52,7 +52,7 @@ with st.sidebar:
     # PDF uploader
     uploaded_file = st.sidebar.file_uploader("Upload a PDF", type="pdf")
     if uploaded_file is not None:
-        db = ChromaDb()
+        db = FAISSDb()
         st.session_state.file_uploaded = True
         pdf_reader = PdfReader(uploaded_file)
         pdf_text = ""
