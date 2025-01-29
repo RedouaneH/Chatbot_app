@@ -15,6 +15,8 @@ load_dotenv()
 
 st.title("RawBot")
 
+st.info("ℹ️ Note: This chatbot is programmed for English. Using other languages may result in irrelevant responses.")
+
 USER_AVATAR = "👤"
 BOT_AVATAR = "🤖"
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
