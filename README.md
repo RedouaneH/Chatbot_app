@@ -26,3 +26,7 @@ pip install -r requirements.txt
 ```bash
 streamlit run src/rag_app.py
 ```
+
+## Application link
+
+The Application should be available at this link : https://rawbot.streamlit.app/
