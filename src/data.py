@@ -4,24 +4,32 @@ import os
 from typing import List
 from dotenv import load_dotenv
 from googleapiclient.discovery import build
-from langchain.chat_models import ChatOpenAI
+from langchain_openai import ChatOpenAI
 import time
 import requests
 from bs4 import BeautifulSoup
+import re
+import requests
+import time
+from tenacity import retry, stop_after_attempt, wait_fixed
 
 
-def split_into_chunks(text: str, chunk_size: int = 1000, overlap: int = 100) -> List[str]:
-    startt=time.time()
-    words = text.split()
+def split_into_chunks(txt, chunk_size = 1000):
+    """Divise le texte en morceaux tout en respectant la structure des phrases et des paragraphes."""
+    sentences = re.split(r'(\.|\?|!|\n\n)', txt)
     chunks = []
-    start = 0
+    current_chunk = ""
     
-    while start < len(words):
-        end = min(start + chunk_size, len(words))
-        chunk = " ".join(words[start:end])
-        chunks.append(chunk)
-        start += (chunk_size - overlap)
-    print(f"the function splitintochunks takes : {time.time()-startt:.4f} seconds")
+    for sentence in sentences:
+        if len(current_chunk) + len(sentence) < chunk_size:
+            current_chunk += sentence
+        else:
+            chunks.append(current_chunk.strip())
+            current_chunk = sentence
+    
+    if current_chunk:
+        chunks.append(current_chunk.strip())
+    
     return chunks
 
 def search_google(query, top_k):
@@ -49,29 +57,6 @@ def search_google(query, top_k):
             print(f"No items found in the response: {res}")
             break
     return results
-'''
-def extract_text_from_url(url):
-    start = time.time()
-    with requests.Session() as session:
-        headers = {
-            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"
-        }
-        response = session.get(url, headers=headers, timeout=10)
-        response.raise_for_status()
-
-    soup = BeautifulSoup(response.content, "lxml")
-    for script_or_style in soup(["script", "style"]):
-        script_or_style.decompose()
-    text = soup.get_text(separator=" ").strip()
-    text = " ".join([chunk.strip() for chunk in text.split() if chunk.strip()])
-    print(f"the function extract text from url takes: {time.time()-start:.4f} seconds")
-    return text
-'''
-
-from bs4 import BeautifulSoup
-import requests
-import time
-from tenacity import retry, stop_after_attempt, wait_fixed
 
 @retry(stop=stop_after_attempt(3), wait=wait_fixed(2))
 def extract_text_from_url(url):
@@ -98,8 +83,6 @@ def extract_text_from_url(url):
 def build_google_search_query(query, chat_history):
 
     chat_history = truncate_chat_history(chat_history, threshold=10000)
-
-    print(chat_history)
 
     load_dotenv()
     model = ChatOpenAI(model="gpt-3.5-turbo-16k")

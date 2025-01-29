@@ -1,8 +1,8 @@
 
 
-from langchain.vectorstores import FAISS
-from langchain.embeddings.openai import OpenAIEmbeddings
-from langchain.docstore import InMemoryDocstore
+from langchain_community.vectorstores import FAISS
+from langchain_openai import OpenAIEmbeddings
+from langchain_community.docstore.in_memory import InMemoryDocstore
 from data import *
 import faiss
 import uuid
@@ -40,15 +40,15 @@ class FAISSDb:
             ids=ids,
         )
 
-    def add_from_doc(self, doc, metadatas=None, chunk_size=1000, overlap=100):
-        chunks = split_into_chunks(doc, chunk_size, overlap)
+    def add_from_doc(self, doc, metadatas=None, chunk_size=1000):
+        chunks = split_into_chunks(doc, chunk_size)
         self.add(chunks, metadatas)
 
-    def load_from_urls(self, urls, chunk_size=1000, overlap=100):
+    def load_from_urls(self, urls, chunk_size=1000):
         for url in urls:
             try:
                 txt = extract_text_from_url(url)
-                chunks = split_into_chunks(txt, chunk_size, overlap)
+                chunks = split_into_chunks(txt, chunk_size)
                 metadatas = [{"url": url} for _ in chunks]
                 self.add(chunks, metadatas)
             except Exception as e:
@@ -61,9 +61,17 @@ class FAISSDb:
             search_kwargs={"k": k, "score_threshold": score_threshold},
         )
 
-        retrieved_chunks = [value.page_content+" - from the following url : "+value.metadata["url"] for value in retriever.invoke(query)]
+        retrieved_chunks = []
+        for value in retriever.invoke(query):
+            page_content = value.page_content
+            # Check if metadata contains the "url" key and only add it if it exists
+            if "url" in value.metadata:
+                retrieved_chunks.append(f"{page_content} - from the following url: {value.metadata['url']}")
+            else:
+                retrieved_chunks.append(page_content)
 
         return retrieved_chunks
+
 
     def reset(self):
         # Clear and reinitialize the FAISS vector store

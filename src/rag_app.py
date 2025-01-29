@@ -15,14 +15,14 @@ load_dotenv()
 
 st.title("RawBot")
 
-st.info("ℹ️ Note: This chatbot is programmed for English. Using other languages may result in irrelevant responses.")
+st.info("ℹ️ Note: This chatbot is programmed for English language. Using other languages may result in irrelevant responses.")
 
 USER_AVATAR = "👤"
 BOT_AVATAR = "🤖"
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 if "openai_model" not in st.session_state:
-    st.session_state["openai_model"] = "gpt-3.5-turbo"
+    st.session_state["openai_model"] = "chatgpt-4o-latest"
 
 if "messages" not in st.session_state:
     st.session_state.messages = []
@@ -35,10 +35,9 @@ if "file_uploaded" not in st.session_state:
 
 db = FAISSDb()
 top_k_url = 5
-top_k_similar = 5
+top_k_similar = 10
 score_threshold = 0.2
 chunk_size = 500
-overlap_ratio = 0.15
 
 # --- Side Bar ---
 
@@ -58,7 +57,7 @@ with st.sidebar:
         pdf_text = ""
         for page in pdf_reader.pages:
             pdf_text += page.extract_text()
-        db.add_from_doc(pdf_text, chunk_size=1000, overlap=100)
+        db.add_from_doc(pdf_text, chunk_size=1000)
 
     # Search Web button
     if uploaded_file:
@@ -81,6 +80,8 @@ for message in st.session_state.messages:
 
 # Main chat Interface
 if prompt := st.chat_input("How can I help?"):
+
+    print(f"\nUser prompt : {prompt}")
 
     if uploaded_file:
         # RAG 
@@ -107,7 +108,7 @@ if prompt := st.chat_input("How can I help?"):
         chat_history = [message["content"] for message in st.session_state.messages if message["role"] in ["assistant", "user"]]
 
         web_search_prompt = generate_web_search_prompt(
-            db, prompt, top_k_url, chunk_size, overlap_ratio, top_k_similar, score_threshold, chat_history
+            db, prompt, top_k_url, chunk_size , top_k_similar, score_threshold, chat_history
             )
 
         st.session_state.messages.append({"role": "system", "content": web_search_prompt})
