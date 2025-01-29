@@ -3,7 +3,7 @@ import streamlit as st
 from dotenv import load_dotenv
 import os
 from PyPDF2 import PdfReader
-
+from datetime import date
 from db import *
 from generation import *
 from data import *
@@ -30,6 +30,8 @@ if "search_web" not in st.session_state:
 
 if "file_uploaded" not in st.session_state:
     st.session_state.file_uploaded = False
+
+today_date_given = False
 
 db = FAISSDb()
 top_k_url = 5
@@ -62,7 +64,7 @@ with st.sidebar:
     # Search Web button
     if uploaded_file:
         st.session_state.search_web = False
-        st.sidebar.toggle("Search the web", value=False, disabled=True) 
+        st.sidebar.toggle("Search the web", value=False, disabled=True)
     else:
         st.session_state.search_web = False
         st.session_state.search_web = st.sidebar.toggle("Search the web", value=st.session_state.search_web)
@@ -71,12 +73,25 @@ with st.sidebar:
         st.session_state.file_uploaded = False
         db.reset()
 
+    # Give the date to the chatbot
+    if st.session_state.search_web and not today_date_given:
+        
+        today_date = date.today()
+        date_prompt = f"Today data is : {today_date}"
+
+        st.session_state.messages.append({"role": "system", "content": date_prompt})
+
+        today_date_given = True
+
+
 # Display The chat
 for message in st.session_state.messages:
     if message["role"] != "system":
         avatar = USER_AVATAR if message["role"] == "user" else BOT_AVATAR
         with st.chat_message(message["role"], avatar=avatar):
             st.markdown(message["content"])
+
+
 
 # Main chat Interface
 if prompt := st.chat_input("How can I help?"):
