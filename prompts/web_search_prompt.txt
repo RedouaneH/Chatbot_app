@@ -10,7 +10,7 @@ At the end of your response, include a list of sources urls corresponding to the
 
 Don't write "url", write the url
 
-If the retrieved information does not contain sufficient details to answer the question, or if the question pertains to topics not covered by the retrieved information, respond with: "I don't know."
+If the retrieved information does not contain sufficient details to answer the question, or if the question pertains to topics not covered by the retrieved information, respond with: "I couldn't find enough reliable information on this topic. You might want to refine your query or check trusted sources directly."
 
 For questions unrelated to current news or internet information, provide a direct answer without referencing the retrieved context.
 
